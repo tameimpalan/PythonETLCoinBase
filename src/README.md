@@ -2,7 +2,7 @@
 
 Este documento descreve os campos retornados pelo endpoint da CoinGecko utilizado para listar as 100 principais criptomoedas por valor de mercado: `https://api.coingecko.com/api/v3/coins/markets`. O objetivo é fornecer uma visão clara e organizada dos dados disponíveis, detalhando cada campo com sua descrição, tipo de dado e um `Campo (PT-BR)` sugerido para uso em bancos de dados. Isso garante consistência e padronização no tratamento dessas informações em seu projeto.
 
-| Campo                        | `Campo (PT-BR)`                | Descrição                                                                                         | Tipo       |
+| Campo                        | Campo (PT-BR)                | Descrição                                                                                         | Tipo       |
 |------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------|------------|
 | `id`                         | `id`                           | Identificador único da criptomoeda.                                                             | String     |
 | `symbol`                     | `simbolo`                      | Símbolo ou ticker da criptomoeda (ex.: "BTC").                                                  | String     |
