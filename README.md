@@ -1,98 +1,89 @@
-# Projeto de Extração de Dados da Coinbase API com Python
+# Projeto ETL para Extração de Dados da Coinbase
 
-Este é um projeto inicial que utiliza a API da Coinbase para realizar a extração de dados financeiros relacionados a criptomoedas. Ele foi desenvolvido em Python, utilizando a biblioteca `requests` para realizar chamadas à API.
+Este projeto é um pipeline ETL (Extract, Transform, Load) para coletar, processar e armazenar dados da plataforma Coinbase. Ele foi desenvolvido em Python para facilitar a integração e a automação do fluxo de dados. Este projeto foi criado para fins de portfólio e está disponível no meu site pessoal ([alanavelar.com](https://alanavelar.com)).
 
 ## Funcionalidades
 
-- Autenticação e conexão com a API da Coinbase.
-- Extração de dados de preços, transações e outros recursos disponíveis na API.
-- Armazenamento e organização dos dados em um formato estruturado para futuras análises.
-
-## Tecnologias Utilizadas
-
-- **Linguagem**: Python 3.9+
-- **Bibliotecas**:
-  - `requests` para realizar chamadas à API.
-  - `json` para manipulação de dados retornados.
+- **Extração**: Coleta de dados da API da Coinbase.
+- **Transformação**: Processamento, limpeza e armazenamento dos dados.
+- **Carregamento**: Carregamento dos dados em plataforma de visualização.
 
 ## Requisitos
 
-Certifique-se de ter os seguintes itens instalados:
+- Python 3.8 ou superior
+- Conta de desenvolvedor na Coinbase (para acessar a API)
+- Docker (opcional, caso prefira rodar em contêiner)
 
-1. Python 3.9 ou superior.
-2. Gerenciador de pacotes `pip` (geralmente incluso na instalação do Python).
-3. Uma conta na [Coinbase](https://www.coinbase.com/) com acesso às chaves de API.
+### Bibliotecas Necessárias
 
-## Instalação
+As dependências podem ser instaladas usando o arquivo `requirements.txt`:
 
-1. Clone este repositório para a sua máquina local:
+```bash
+pip install -r requirements.txt
+```
 
-   ```bash
-   git clone https://github.com/seuusuario/coinbase-api-extraction.git
-   cd coinbase-api-extraction
-   ```
+As principais bibliotecas utilizadas incluem:
 
-2. Crie e ative um ambiente virtual (opcional, mas recomendado):
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate # No Windows: venv\Scripts\activate
-   ```
-
-3. Instale as dependências necessárias:
-
-   ```bash
-   pip install requests
-   ```
+- `requests` - Para interagir com a API da Coinbase.
+- `pandas` - Para manipulação e transformação de dados.
+- `sqlalchemy` - Para conexão com bancos de dados.
 
 ## Configuração
 
-1. Crie um arquivo `.env` na raiz do projeto e adicione suas credenciais da API da Coinbase:
-
-   ```env
-   COINBASE_API_KEY=your_api_key
-   COINBASE_API_SECRET=your_api_secret
-   ```
-
-2. Certifique-se de manter este arquivo seguro e não compartilhá-lo publicamente.
-
-## Uso
-
-Um exemplo de uso básico pode ser encontrado no arquivo `main.py`. Para executar o script:
+1. Clone este repositório:
 
 ```bash
-python main.py
+git clone https://github.com/tameimpalan/PythonETLCoinBase.git
+cd PythonETLCoinBase
 ```
 
-### Exemplo de Chamada à API
+2. Configure as variáveis de ambiente no arquivo `.env`. Um exemplo está disponível em `.env.example`:
 
-```python
-import requests
-import os
-from dotenv import load_dotenv
-
-# Carrega as variáveis de ambiente
-load_dotenv()
-
-API_KEY = os.getenv("COINBASE_API_KEY")
-API_SECRET = os.getenv("COINBASE_API_SECRET")
-BASE_URL = "https://api.coinbase.com/v2"
-
-# Exemplo: Buscar preço atual do Bitcoin
-response = requests.get(f"{BASE_URL}/prices/BTC-USD/spot", headers={
-    "Authorization": f"Bearer {API_KEY}"
-})
-
-data = response.json()
-print(data)
+```env
+COINBASE_API_KEY=seu_api_key
+COINBASE_API_SECRET=seu_api_secret
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/seubanco
 ```
 
-## Contribuição
+3. (Opcional) Construa e rode o projeto com Docker:
 
-Contribuições são bem-vindas! Se você tiver sugestões ou encontrar bugs, abra uma issue ou envie um pull request.
+```bash
+docker build -t PythonETLCoinBase .
+docker run --env-file .env PythonETLCoinBase
+```
 
-## Licença
+## Estrutura do Projeto
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
+```plaintext
+/
+├── src/
+│   ├── extract.py  # Extração de dados da API Coinbase
+│   ├── transform.py  # Limpeza e processamento dos dados
+│   └── load.py  # Carregamento para o banco de dados
+├── .env.example  # Exemplo de configuração de variáveis de ambiente
+├── requirements.txt  # Dependências do projeto
+└── README.md  # Documentação do projeto
+```
 
-# PythonETLCoinBase
+## Execução
+
+1. Certifique-se de que todas as dependências estão instaladas.
+
+2. Execute o pipeline:
+
+```bash
+python src/extract.py
+python src/transform.py
+python src/load.py
+```
+
+3. Verifique os dados processados no destino configurado (banco de dados ou arquivo).
+
+## Melhorias Futuras
+
+- Implementar logs estruturados para monitoramento.
+- Escalar o pipeline com orquestrador mais robusto (como Airflow).
+
+### Contato
+
+Este projeto foi desenvolvido para fins de portfólio. Entre em contato pelo email: [contato@alanavelar.com](mailto:contato@alanavelar.com).
