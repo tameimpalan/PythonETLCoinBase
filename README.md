@@ -11,22 +11,30 @@ Este projeto é um pipeline **ETL** (Extract, Transform, Load) para coletar, pro
 ## Requisitos
 
 - **Python 3.8 ou superior**
-- Conta de desenvolvedor na **CoinGecko** (para acessar a API)
-- **Docker** (opcional, caso prefira rodar em contêiner)
+- **Virtual Environment (venv)** para isolar as dependências do projeto.
+- Conta de desenvolvedor na **CoinGecko** (opcional, para autenticação).
+- **Docker** (opcional, caso prefira rodar em contêiner).
 
-### Bibliotecas Necessárias
+### Benefícios da Autenticação na API da CoinGecko
 
-As dependências podem ser instaladas usando o arquivo `requirements.txt`:
+A autenticação na API da CoinGecko é opcional, mas oferece o benefício de aumentar o limite de requisições de 100 para 200 chamadas por minuto. Para utilizar a autenticação, você deve gerar uma chave de API no site da CoinGecko e configurá-la como uma variável de ambiente. Consulte o guia oficial para mais detalhes sobre como gerar sua chave de API: [CoinGecko - User Guide](https://support.coingecko.com/hc/en-us/articles/21880397454233-User-Guide-How-to-sign-up-for-CoinGecko-Demo-API-and-generate-an-API-key).
 
-```bash
-pip install -r requirements.txt
+Exemplo de configuração no arquivo `.env`:
+
+```env
+COINGECKO_API_KEY=SUA_API_KEY
 ```
 
-As principais bibliotecas utilizadas incluem:
+Ao utilizar a chave de API, ela deve ser incluída nos parâmetros da requisição, como no exemplo abaixo:
 
-- `requests` - Para interagir com a API da CoinGecko.
-- `pandas` - Para manipulação e transformação de dados.
-- `sqlalchemy` - Para conexão com bancos de dados.
+```python
+coingecko_api_key = os.getenv("COINGECKO_API_KEY")
+
+params = {
+    "x_cg_pro_api_key": coingecko_api_key,
+    # Outros parâmetros aqui...
+}
+```
 
 ## Configuração
 
@@ -37,13 +45,30 @@ git clone https://github.com/tameimpalan/PythonETLCoinGecko.git
 cd PythonETLCoinGecko
 ```
 
-2. **Configure as variáveis de ambiente** no arquivo `.env`. Um exemplo está disponível em `.env.example`:
+2. **Crie e ative um ambiente virtual (venv):**
+
+```bash
+python -m venv venv
+# Ativar no Windows
+venv\Scripts\activate
+# Ativar no Linux/Mac
+source venv/bin/activate
+```
+
+3. **Instale as dependências:**
+
+```bash
+pip install -r requirements.txt
+```
+
+4. **Configure as variáveis de ambiente no arquivo ****\`\`****.** Um exemplo está disponível em `.env.example`:
 
 ```env
+COINGECKO_API_KEY=CG-E6sJJSfPrJAfx9ZJHeWpo3D4
 DATABASE_URL=postgresql://usuario:senha@localhost:5432/seubanco
 ```
 
-3. **(Opcional)** Construa e rode o projeto com Docker:
+5. **(Opcional) Construa e rode o projeto com Docker:**
 
 ```bash
 docker build -t PythonETLCoinGecko .
@@ -54,10 +79,7 @@ docker run --env-file .env PythonETLCoinGecko
 
 ```plaintext
 /
-├── src/
-│   ├── extract.py  # Extração de dados da API CoinGecko
-│   ├── transform.py  # Limpeza e processamento dos dados
-│   └── load.py  # Carregamento para o banco de dados
+├── pipeline.py  # Pipeline completo de extração, transformação e carregamento
 ├── .env.example  # Exemplo de configuração de variáveis de ambiente
 ├── requirements.txt  # Dependências do projeto
 └── README.md  # Documentação do projeto
@@ -70,20 +92,19 @@ docker run --env-file .env PythonETLCoinGecko
 2. **Execute o pipeline:**
 
 ```bash
-python src/extract.py
-python src/transform.py
-python src/load.py
+python pipeline.py
 ```
 
 3. **Verifique os dados processados** no destino configurado (banco de dados ou arquivo).
 
 ## Limite de Requisições da API
 
-A API da **CoinGecko** possui o seguinte limite de requisições no plano gratuito:
-- **100 requisições por minuto.**
-- **Sem limite diário definido**, desde que respeitado o limite de 100 chamadas por minuto.
+A API da **CoinGecko** possui os seguintes limites de requisições:
 
-Se você exceder este limite, suas requisições podem ser **temporariamente bloqueadas**. Para lidar com isso, recomenda-se implementar pausas (`time.sleep`) entre as chamadas ou adotar um plano comercial oferecido pela CoinGecko.
+- **Plano público (sem autenticação):** 100 requisições por minuto.
+- **Plano com autenticação:** 200 requisições por minuto (necessário passar a chave `x_cg_pro_api_key` nos parâmetros da requisição).
+
+Se você exceder este limite, suas requisições podem ser **temporariamente bloqueadas**. Para lidar com isso, recomenda-se implementar pausas (`time.sleep`) entre as chamadas ou configurar a chave de autenticação para aproveitar o limite maior.
 
 ## Melhorias Futuras
 
@@ -92,4 +113,5 @@ Se você exceder este limite, suas requisições podem ser **temporariamente blo
 
 ### Contato
 
-Este projeto foi desenvolvido para fins de **portfólio**. Entre em contato pelo email: [contato@alanavelar.com](mailto:contato@alanavelar.com).
+Este projeto foi desenvolvido para fins de **portfólio**. Entre em contato pelo email: [contato@alanavelar.com](mailto\:contato@alanavelar.com).
+
