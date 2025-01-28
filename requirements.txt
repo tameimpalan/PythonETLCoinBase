@@ -1,3 +1,6 @@
 pandas==2.0.0
 requests==2.28.2
 SQLAlchemy==2.0.37
+pprint
+python-dotenv
+google-cloud-storage
