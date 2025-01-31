@@ -77,7 +77,6 @@ def transform_obtained_data(data, timestamp):
     ]
 
 def upload_to_gcp(bucket_name, data, destination_blob_name):
-    """Faz upload dos dados transformados diretamente para o GCP sem salvar localmente."""
     try:
         client = storage.Client()
         bucket = client.bucket(bucket_name)
@@ -86,7 +85,6 @@ def upload_to_gcp(bucket_name, data, destination_blob_name):
         print(f"Arquivo enviado para '{bucket_name}/{destination_blob_name}' com sucesso!")
     except Exception as e:
         print(f"Erro ao fazer upload para o GCP: {e}")
-
 
 if __name__ == "__main__":
     data = extract_data_from_coingecko()
@@ -99,9 +97,9 @@ if __name__ == "__main__":
 
     gcp_bucket_name = os.getenv("GCP_BUCKET_NAME")
     
-    gcp_destination_blob = f"transformed_data/coingecko_markets_data_{str_timestamp}.json"
+    gcp_destination_blob = f"coingecko/markets_{str_timestamp}.json"
 
     if gcp_bucket_name:
-        upload_to_gcp(gcp_bucket_name, transformed_data, gcp_destination_blob)
+        upload_to_gcp(gcp_bucket_name, data, gcp_destination_blob)
     else:
         print("GCP_BUCKET_NAME não configurado no .env")

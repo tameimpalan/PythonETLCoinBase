@@ -4,4 +4,3 @@ SQLAlchemy==2.0.37
 pprint
 python-dotenv
 google-cloud-storage
-json
