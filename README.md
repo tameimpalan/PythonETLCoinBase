@@ -48,11 +48,9 @@ cd PythonETLCoinGecko
 2. **Crie e ative um ambiente virtual (venv):**
 
 ```bash
-python -m venv venv
-# Ativar no Windows
-venv\Scripts\activate
-# Ativar no Linux/Mac
-source venv/bin/activate
+python -m venv .venv
+# Ativar no bash
+source .venv/Scripts/activate
 ```
 
 3. **Instale as dependências:**
