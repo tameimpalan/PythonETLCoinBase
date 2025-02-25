@@ -8,12 +8,24 @@ Este projeto é um pipeline **ETL** (Extract, Transform, Load) para coletar, pro
 - **Transformação**: Processamento, limpeza e armazenamento dos dados.
 - **Carregamento**: Carregamento dos dados em plataforma de visualização.
 
+## Arquitetura Medallion
+
+Este projeto segue a arquitetura **Medallion**, estruturando os dados em três camadas principais:
+
+1. **Bronze**: Armazena os dados brutos diretamente do CoinGecko no **Google Cloud Storage (Blob GCP)**.
+2. **Silver**: Realiza a limpeza e transformação dos dados, carregando-os em uma **tabela externa append-only no BigQuery**.
+3. **Gold**: Agrega os dados de forma otimizada através de **views no BigQuery**, garantindo maior desempenho para consultas analíticas.
+
+A visualização dos dados é feita no **Power BI**, utilizando **DirectQuery** para acessar as views do BigQuery em tempo real.
+
 ## Requisitos
 
 - **Python 3.8 ou superior**
 - **Virtual Environment (venv)** para isolar as dependências do projeto.
 - Conta de desenvolvedor na **CoinGecko** (opcional, para autenticação).
 - **Docker** (opcional, caso prefira rodar em contêiner).
+- **SQLAlchemy** para manipulação de banco de dados.
+- **google-cloud-storage** e **gcsfs** para integração com Google Cloud Storage.
 
 ### Benefícios da Autenticação na API da CoinGecko
 
@@ -28,6 +40,8 @@ COINGECKO_API_KEY=SUA_API_KEY
 Ao utilizar a chave de API, ela deve ser incluída nos parâmetros da requisição, como no exemplo abaixo:
 
 ```python
+import os
+
 coingecko_api_key = os.getenv("COINGECKO_API_KEY")
 
 params = {
@@ -50,7 +64,8 @@ cd PythonETLCoinGecko
 ```bash
 python -m venv .venv
 # Ativar no bash
-source .venv/Scripts/activate
+source .venv/bin/activate  # Linux/macOS
+source .venv/Scripts/activate  # Windows
 ```
 
 3. **Instale as dependências:**
@@ -59,7 +74,7 @@ source .venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
-4. **Configure as variáveis de ambiente no arquivo ****\`\`****.** Um exemplo está disponível em `.env.example`:
+4. **Configure as variáveis de ambiente no arquivo `.env`**. Um exemplo está disponível em `.env.example`:
 
 ```env
 COINGECKO_API_KEY=CG-E6sJJSfPrJAfx9ZJHeWpo3D4
@@ -77,10 +92,17 @@ docker run --env-file .env PythonETLCoinGecko
 
 ```plaintext
 /
-├── pipeline.py  # Pipeline completo de extração, transformação e carregamento
-├── .env.example  # Exemplo de configuração de variáveis de ambiente
+├── auth/
+│   ├── gcp-credentials.json  # Credenciais para acesso a serviços GCP
+│   ├── seu_arquivo.json  # Outro arquivo de autenticação
+│
+├── src/
+│   ├── bronze.py  # Extração de dados da API
+│   ├── silver.py  # Processamento e transformação dos dados
+│   ├── README.md  # Documentação do código-fonte
+│
+├── README.md  # Documentação geral do projeto
 ├── requirements.txt  # Dependências do projeto
-└── README.md  # Documentação do projeto
 ```
 
 ## Execução
@@ -90,7 +112,8 @@ docker run --env-file .env PythonETLCoinGecko
 2. **Execute o pipeline:**
 
 ```bash
-python pipeline.py
+python src/bronze.py  # Para extração de dados
+python src/silver.py  # Para processamento e transformação
 ```
 
 3. **Verifique os dados processados** no destino configurado (banco de dados ou arquivo).
@@ -111,5 +134,5 @@ Se você exceder este limite, suas requisições podem ser **temporariamente blo
 
 ### Contato
 
-Este projeto foi desenvolvido para fins de **portfólio**. Entre em contato pelo email: [contato@alanavelar.com](mailto\:contato@alanavelar.com).
+Este projeto foi desenvolvido para fins de **portfólio**. Entre em contato pelo email: [contato@alanavelar.com](mailto:contato@alanavelar.com).
 
